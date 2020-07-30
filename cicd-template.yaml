@@ -34,16 +34,16 @@ parameters:
   name: ENABLE_QUAY
   required: true
 - displayName: Quay.io Username
-  description: Quay.io username to push the images to ${appName}-sample-app repository on your Quay.io account
+  description: Quay.io username to push the images to repository on your Quay.io account
   name: QUAY_USERNAME
 - displayName: Quay.io Password
-  description: Quay.io password to push the images to ${appName}-sample-app repository on your Quay.io account
+  description: Quay.io password to push the images to repository on your Quay.io account
   name: QUAY_PASSWORD
 - displayName: Quay.io Image Repository
-  description: Quay.io repository for pushing ${appName} container images
+  description: Quay.io repository for pushing container images
   name: QUAY_REPOSITORY
   required: true
-  value: ${appName}-app
+  value: task-app
 objects:
 - apiVersion: v1
   groupNames: null
@@ -64,7 +64,7 @@ objects:
     labels:
       app: cicd-pipeline
       name: cicd-pipeline
-    name: ${appName}-pipeline
+    name: cicd-pipeline
   spec:
     triggers:
       - type: GitHub
@@ -184,7 +184,7 @@ objects:
   kind: ConfigMap
   metadata:
     labels:
-      app: cicd-pipeline
+      app: tasks-pipeline
       role: jenkins-slave
     name: jenkins-slaves
   data:
@@ -281,16 +281,16 @@ objects:
           - -c
           - |           
             # Set Application name
-            appName = "books-api"
-            imageName = "wildfly"
-            image = "openshift/wildfly-120-centos7"
+            appName="books-api"
+            imageName="openjdk"
+            image="openjdk:8"
 
             # adjust jenkins 
             oc set resources dc/jenkins --limits=cpu=2,memory=2Gi --requests=cpu=100m,memory=512Mi 
             oc label dc jenkins app=jenkins --overwrite 
 
             # setup dev env
-            #oc import-image ${imageName} --from=${image} --confirm -n ${DEV_PROJECT} 
+            oc import-image ${imageName} --from=${image} --confirm -n ${DEV_PROJECT} 
             
             if [ "${ENABLE_QUAY}" == "true" ] ; then
               # cicd
